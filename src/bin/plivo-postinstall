@@ -40,11 +40,11 @@ def postinstall():
     f.write(new_buff)
     f.close()
     # set plivo cache conf
-    f = open(etc_prefix + '/plivo/cache/cache.conf', 'r')
+    f = open(etc_prefix + '/plivo/cache.conf', 'r')
     buff = f.read()
     f.close()
     new_buff = buff.replace('@PREFIX@', prefix)
-    f = open(etc_prefix + '/plivo/cache/cache.conf', 'w')
+    f = open(etc_prefix + '/plivo/cache.conf', 'w')
     f.write(new_buff)
     f.close()
     # set plivo cache script
