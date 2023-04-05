@@ -327,7 +327,7 @@ class PlivoRestServer(PlivoRestApi):
                     self.log.info("Connected to FreeSWITCH")
                     # serve forever
                     self._rest_inbound_socket.serve_forever()
-                except ConnectError, e:
+                except ConnectError as e:
                     if self._run is False:
                         break
                     self.log.error("Connect failed: %s" % str(e))
