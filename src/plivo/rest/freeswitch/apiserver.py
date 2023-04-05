@@ -222,7 +222,7 @@ class PlivoRestServer(PlivoRestApi):
             # get pid file for reloading outbound server (ugly hack ...)
             try:
                 self.fs_out_pidfile = self._pidfile.replace('rest-', 'outbound-')
-            except Exception, e:
+            except Exception as e:
                 self.fs_out_pidfile = None
 
             # create new logger if reloading
@@ -234,7 +234,7 @@ class PlivoRestServer(PlivoRestApi):
             self._config = config
             self.log.info("Config : %s" % str(self._config.dumps()))
 
-        except Exception, e:
+        except Exception as e:
             if backup_config:
                 self._config = backup_config
                 self.load_config()
