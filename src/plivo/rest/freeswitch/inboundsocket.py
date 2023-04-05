@@ -400,7 +400,7 @@ class RESTInboundSocket(InboundEventSocket):
             # send hangup
             try:
                 self.set_hangup_complete(None, call_uuid, reason, event, None)
-            except Exception, e:
+            except Exception as e:
                 self.log.error(str(e))
         # Handle outgoing call hangup
         else:
