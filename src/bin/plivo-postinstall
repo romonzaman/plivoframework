@@ -59,4 +59,4 @@ def postinstall():
 
 if __name__ == '__main__':
     postinstall()
-    print "Plivo postinstall done"
+    print("Plivo postinstall done")
