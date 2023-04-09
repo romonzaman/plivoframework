@@ -5,7 +5,7 @@
 Event Types classes
 """
 
-from urllib import unquote
+from urllib.parse import unquote
 import ujson as json
 
 

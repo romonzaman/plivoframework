@@ -130,8 +130,8 @@ class PlivoRestApi(object):
             auth_type, encoded_auth_str = \
                 request.headers['Authorization'].split(' ', 1)
             if auth_type == 'Basic':
-                decoded_auth_str = base64.decodestring(encoded_auth_str)
-                auth_id, auth_token = decoded_auth_str.split(':', 1)
+                decoded_auth_str = base64.b64decode(encoded_auth_str)
+                auth_id, auth_token = decoded_auth_str.decode('utf-8').split(':', 1)
                 if auth_id == self.key and auth_token == self.secret:
                     return True
         except (KeyError, ValueError, TypeError):

@@ -10,7 +10,7 @@ from uuid import uuid1
 import gevent
 import gevent.event
 import gevent.socket as socket
-from gevent.coros import RLock
+from gevent.lock import RLock
 import gevent.pool
 from gevent import GreenletExit
 

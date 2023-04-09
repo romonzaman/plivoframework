@@ -615,7 +615,8 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
             self.validate_element(element, element_instance)
 
     def validate_element(self, element, element_instance):
-        children = element.getchildren()
+        print(element)
+        children = list(element)
         if children and not element_instance.nestables:
             raise RESTFormatException("%s cannot have any children!"
                                             % element_instance.name)
