@@ -18,7 +18,7 @@ fi
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 PLIVO_ENV=$1
 
-LAST_PYTHON_VERSION=2.7.2
+LAST_PYTHON_VERSION=3.9.2
 
 # Check if Install Directory Present
 if [ ! $1 ] || [ -z "$1" ] ; then
@@ -65,9 +65,9 @@ declare -i PY_MINOR_VERSION
 PY_MAJOR_VERSION=$(python -V 2>&1 |sed -e 's/Python[[:space:]]\+\([0-9]\)\..*/\1/')
 PY_MINOR_VERSION=$(python -V 2>&1 |sed -e 's/Python[[:space:]]\+[0-9]\+\.\([0-9]\+\).*/\1/')
 
-if [ $PY_MAJOR_VERSION -ne 2 ] || [ $PY_MINOR_VERSION -lt 4 ]; then
+if [ $PY_MAJOR_VERSION -ne 3 ] || [ $PY_MINOR_VERSION -lt 9 ]; then
     echo ""
-    echo "Need Python version >= 2.4.X to install Plivo"
+    echo "Need Python version >= 3.9.X to install Plivo"
     echo "Please install a compatible version of python."
     echo ""
     exit 1
@@ -79,45 +79,10 @@ case $DIST in
         DEBIAN_VERSION=$(cat /etc/debian_version |cut -d'.' -f1)
         apt-get -y update
         apt-get -y install autoconf automake autotools-dev binutils bison build-essential cpp curl flex g++ gcc git-core libaudiofile-dev libc6-dev libdb-dev libexpat1 libgdbm-dev libgnutls-dev libmcrypt-dev libncurses5-dev libnewt-dev libpcre3 libpopt-dev libsctp-dev libsqlite3-dev libtiff4 libtiff4-dev libtool libx11-dev libxml2 libxml2-dev lksctp-tools lynx m4 make mcrypt ncftp nmap openssl sox sqlite3 ssl-cert ssl-cert unixodbc-dev unzip zip zlib1g-dev zlib1g-dev libevent-dev
-        if [ "$DEBIAN_VERSION" = "5" ]; then
-            apt-get -y update
-            apt-get -y install git-core python-setuptools python-dev build-essential libreadline5-dev
-        else
-            apt-get -y update
-            apt-get -y install git-core python-setuptools python-dev build-essential
-        fi
-        if [ $PY_MAJOR_VERSION -eq 2 ] && [ $PY_MINOR_VERSION -lt 6 ]; then
-            # Setup Env
-            mkdir -p $REAL_PATH/deploy
-            DEPLOY=$REAL_PATH/deploy
-            cd $DEPLOY
-            cd $REAL_PATH/deploy
 
-            # Install Isolated copy of python
-		    if [ ! -f $REAL_PATH/bin/python ]; then
-			    mkdir source
-			    cd source
-			    wget http://www.python.org/ftp/python/$LAST_PYTHON_VERSION/Python-$LAST_PYTHON_VERSION.tgz
-			    tar -xvf Python-$LAST_PYTHON_VERSION.tgz
-			    cd Python-$LAST_PYTHON_VERSION
-			    ./configure --prefix=$DEPLOY
-			    make && make install
-		    fi
-            # This is what does all the magic by setting upgraded python
-            export PATH=$DEPLOY/bin:$PATH
+        apt-get -y update
+        apt-get -y install git-core python-setuptools python3-dev build-essential python3-virtualenv
 
-            # Install easy_install
-            cd $DEPLOY/source
-            wget --no-check-certificate $PLIVO_SETUP_SCRIPT
-            $DEPLOY/bin/python ez_setup.py
-
-            EASY_INSTALL=$(which easy_install)
-            $DEPLOY/bin/python $EASY_INSTALL --prefix $DEPLOY virtualenv
-            $DEPLOY/bin/python $EASY_INSTALL --prefix $DEPLOY pip
-	    else
-		    easy_install virtualenv
-		    easy_install pip
-	    fi
     ;;
     'CENTOS')
         yum -y update
@@ -185,7 +150,7 @@ source $REAL_PATH/bin/activate
 
 # force installation of gevent 1.03a
 pip uninstall gevent
-pip install -Iv http://gevent.googlecode.com/files/gevent-1.0a3.tar.gz
+pip install gevent
 pip install -e git+${PLIVO_GIT_REPO}@${BRANCH}#egg=plivo
 
 
