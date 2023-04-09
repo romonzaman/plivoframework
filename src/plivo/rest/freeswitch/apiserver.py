@@ -234,7 +234,7 @@ class PlivoRestServer(PlivoRestApi):
             self._config = config
             self.log.info("Config : %s" % str(self._config.dumps()))
 
-        except Exception as  e:
+        except Exception as e:
             if backup_config:
                 self._config = backup_config
                 self.load_config()
