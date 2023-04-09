@@ -145,7 +145,7 @@ esac
 
 
 # Setup virtualenv
-virtualenv --no-site-packages $REAL_PATH
+virtualenv $REAL_PATH
 source $REAL_PATH/bin/activate
 
 # force installation of gevent 1.03a
