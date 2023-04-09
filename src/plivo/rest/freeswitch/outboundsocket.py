@@ -564,8 +564,9 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
         try:
             http_obj = HTTPRequest(self.key, self.secret, proxy_url=self.proxy_url)
             data = http_obj.fetch_response(url, params, method, log=self.log)
-            return data
-        except Exception, e:
+            return data.decode('utf-8')
+
+        except Exception as e:
             self.log.error("Sending to %s %s with %s -- Error: %s" \
                                         % (method, url, params, e))
         return None

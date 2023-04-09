@@ -152,6 +152,8 @@ class EventSocket(Commands):
         buff = ''
         for x in range(MAXLINES_PER_EVENT):
             line = self.transport.read_line()
+            if type(line) == type(b'str'):
+                line = line.decode('utf-8')
             if line == '':
                 self.trace("no more data in read_event !")
                 raise ConnectError("connection closed")

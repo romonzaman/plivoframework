@@ -20,8 +20,9 @@ class Event(object):
         self._headers = {}
         self._raw_body = ''
         if buffer:
-            buffer = buffer.decode('utf-8', 'ignore')
-            buffer = buffer.encode('utf-8')
+            if type(buffer) != type('str'):
+                buffer = buffer.decode('utf-8', 'ignore')
+                buffer = buffer.encode('utf-8')
             # Sets event headers from buffer.
             for line in buffer.splitlines():
                 try:

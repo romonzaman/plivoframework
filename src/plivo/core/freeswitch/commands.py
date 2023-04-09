@@ -63,6 +63,8 @@ class Commands(object):
             return None
         api_response = self.api("uuid_getvar %s %s" % (uuid, var))
         result = api_response.get_body().strip()
+        if type(result) == type(b'str'):
+            result = result.decode('utf-8')
         if result == '_undef_' or result[:4] == '-ERR':
             result = None
         return result
