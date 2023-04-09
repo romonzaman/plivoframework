@@ -690,7 +690,7 @@ class RESTInboundSocket(InboundEventSocket):
         for call_req in group_list:
             extras = []
             dial_gws = []
-            for gw in call.gateways:
+            for gw in call_req.gateways:
                 _options = []
                 # Add codecs option
                 if gw.codecs:
@@ -734,10 +734,13 @@ class RESTInboundSocket(InboundEventSocket):
                 % (dial_str, outbound_str)
         self.log.debug("GroupCall : %s" % str(dial_str))
 
-        bg_api_response = self.bgapi(dial_str)
-        job_uuid = bg_api_response.get_job_uuid()
-        self.bk_jobs[job_uuid] = request_uuid
-        self.log.debug(str(bg_api_response))
+        try:
+            bg_api_response = self.bgapi(dial_str)
+            job_uuid = bg_api_response.get_job_uuid()
+            self.bk_jobs[job_uuid] = request_uuid
+            self.log.debug(str(bg_api_response))
+        except Exception as e:
+            job_uuid = ''
         if not job_uuid:
             self.log.error("GroupCall Failed for RequestUUID %s -- JobUUID not received" \
                                                             % request_uuid)
@@ -771,10 +774,13 @@ class RESTInboundSocket(InboundEventSocket):
                         % (self.get_server().fs_out_address)
         self.xfer_jobs[call_uuid] = outbound_str
         # Transfer into sleep state a little waiting for real transfer
-        res = self.api("uuid_transfer %s 'sleep:5000' inline" % call_uuid)
-        if res.is_success():
-            self.log.info("TransferCall Spawned for %s" % call_uuid)
-            return True
+        try:
+            res = self.api("uuid_transfer %s 'sleep:5000' inline" % call_uuid)
+            if res.is_success():
+                self.log.info("TransferCall Spawned for %s" % call_uuid)
+                return True
+        except Exception as e:
+            pass
         # On failure, remove the job and log error
         try:
             del self.xfer_jobs[call_uuid]
