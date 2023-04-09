@@ -817,7 +817,7 @@ class RESTInboundSocket(InboundEventSocket):
         self.log.info("Executed Hangup for all calls")
         return True
 
-    def conference_api(self, room=None, command=None, async=True):
+    def conference_api(self, room=None, command=None, Async=True):
         if not command:
             self.log.error("Conference Api Failed -- 'command' is empty")
             return False
@@ -826,7 +826,7 @@ class RESTInboundSocket(InboundEventSocket):
         else:
             cmd = "conference %s" % command
         # async mode
-        if async:
+        if Async:
             bg_api_response = self.bgapi(cmd)
             job_uuid = bg_api_response.get_job_uuid()
             if not job_uuid:

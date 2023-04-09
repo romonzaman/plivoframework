@@ -1054,7 +1054,7 @@ class PlivoRestApi(object):
             return self.send_response(Success=result, Message=msg)
         # mute members
         for member in member_id.split(','):
-            res = self._rest_inbound_socket.conference_api(room, "mute %s" % member, async=False)
+            res = self._rest_inbound_socket.conference_api(room, "mute %s" % member, Async=False)
             if not res or res[:2] != 'OK':
                 self._rest_inbound_socket.log.warn("Conference Mute Failed for %s" % str(member))
             elif res.startswith('Conference %s not found' % str(room)) or res.startswith('Non-Existant'):
@@ -1094,7 +1094,7 @@ class PlivoRestApi(object):
             return self.send_response(Success=result, Message=msg)
         # unmute members
         for member in member_id.split(','):
-            res = self._rest_inbound_socket.conference_api(room, "unmute %s" % member, async=False)
+            res = self._rest_inbound_socket.conference_api(room, "unmute %s" % member, Async=False)
             if not res or res[:2] != 'OK':
                 self._rest_inbound_socket.log.warn("Conference Unmute Failed for %s" % str(member))
             elif res.startswith('Conference %s not found' % str(room)) or res.startswith('Non-Existant'):
@@ -1134,7 +1134,7 @@ class PlivoRestApi(object):
             return self.send_response(Success=result, Message=msg)
         # kick members
         for member in member_id.split(','):
-            res = self._rest_inbound_socket.conference_api(room, "kick %s" % member, async=False)
+            res = self._rest_inbound_socket.conference_api(room, "kick %s" % member, Async=False)
             if not res:
                 self._rest_inbound_socket.log.warn("Conference Kick Failed for %s" % str(member))
             elif res.startswith('Conference %s not found' % str(room)) or res.startswith('Non-Existant'):
@@ -1174,7 +1174,7 @@ class PlivoRestApi(object):
             return self.send_response(Success=result, Message=msg)
         # hangup members
         for member in member_id.split(','):
-            res = self._rest_inbound_socket.conference_api(room, "hup %s" % member, async=False)
+            res = self._rest_inbound_socket.conference_api(room, "hup %s" % member, Async=False)
             if not res:
                 self._rest_inbound_socket.log.warn("Conference Hangup Failed for %s" % str(member))
             elif res.startswith('Conference %s not found' % str(room)) or res.startswith('Non-Existant'):
@@ -1214,7 +1214,7 @@ class PlivoRestApi(object):
             return self.send_response(Success=result, Message=msg)
         # deaf members
         for member in member_id.split(','):
-            res = self._rest_inbound_socket.conference_api(room, "deaf %s" % member, async=False)
+            res = self._rest_inbound_socket.conference_api(room, "deaf %s" % member, Async=False)
             if not res or res[:2] != 'OK':
                 self._rest_inbound_socket.log.warn("Conference Deaf Failed for %s" % str(member))
             elif res.startswith('Conference %s not found' % str(room)) or res.startswith('Non-Existant'):
@@ -1254,7 +1254,7 @@ class PlivoRestApi(object):
             return self.send_response(Success=result, Message=msg)
         # deaf members
         for member in member_id.split(','):
-            res = self._rest_inbound_socket.conference_api(room, "undeaf %s" % member, async=False)
+            res = self._rest_inbound_socket.conference_api(room, "undeaf %s" % member, Async=False)
             if not res or res[:2] != 'OK':
                 self._rest_inbound_socket.log.warn("Conference Undeaf Failed for %s" % str(member))
             elif res.startswith('Conference %s not found' % str(room)) or res.startswith('Non-Existant'):
@@ -1303,7 +1303,7 @@ class PlivoRestApi(object):
             filename = "%s_%s" % (datetime.now().strftime("%Y%m%d-%H%M%S"), room)
         recordfile = "%s%s.%s" % (filepath, filename, fileformat)
 
-        res = self._rest_inbound_socket.conference_api(room, "record %s" % recordfile, async=False)
+        res = self._rest_inbound_socket.conference_api(room, "record %s" % recordfile, Async=False)
         if not res:
             msg = "Conference RecordStart Failed"
             result = False
@@ -1344,7 +1344,7 @@ class PlivoRestApi(object):
 
         res = self._rest_inbound_socket.conference_api(room,
                                         "norecord %s" % recordfile,
-                                        async=False)
+                                        Async=False)
         if not res:
             msg = "Conference RecordStop Failed"
             result = False
@@ -1394,9 +1394,9 @@ class PlivoRestApi(object):
         if is_valid_url(filepath):
             url = normalize_url_space(filepath)
             filepath = get_resource(self, url)
-            res = self._rest_inbound_socket.conference_api(room, "play '%s' %s" % (filepath, arg), async=False)
+            res = self._rest_inbound_socket.conference_api(room, "play '%s' %s" % (filepath, arg), Async=False)
         else:
-            res = self._rest_inbound_socket.conference_api(room, "play %s %s" % (filepath, arg), async=False)
+            res = self._rest_inbound_socket.conference_api(room, "play %s %s" % (filepath, arg), Async=False)
         if not res:
             msg = "Conference Play Failed"
             result = False
@@ -1439,9 +1439,9 @@ class PlivoRestApi(object):
             msg = "MemberID Parameter must be present"
             return self.send_response(Success=result, Message=msg)
         if member_id == 'all':
-            res = self._rest_inbound_socket.conference_api(room, "say '%s'" % text, async=False)
+            res = self._rest_inbound_socket.conference_api(room, "say '%s'" % text, Async=False)
         else:
-            res = self._rest_inbound_socket.conference_api(room, "saymember %s '%s'" % (member_id, text), async=False)
+            res = self._rest_inbound_socket.conference_api(room, "saymember %s '%s'" % (member_id, text), Async=False)
         if not res:
             msg = "Conference Speak Failed"
             result = False
@@ -1489,7 +1489,7 @@ class PlivoRestApi(object):
             return self.send_response(Success=result, Message=msg)
         if not members:
             members = None
-        res = self._rest_inbound_socket.conference_api(room, "xml_list", async=False)
+        res = self._rest_inbound_socket.conference_api(room, "xml_list", Async=False)
         if not res:
             msg = "Conference ListMembers Failed"
             result = False
@@ -1538,7 +1538,7 @@ class PlivoRestApi(object):
         onlymuted = get_post_param(request, 'MutedFilter') == 'true'
         onlydeaf = get_post_param(request, 'DeafFilter') == 'true'
 
-        res = self._rest_inbound_socket.conference_api(room='', command="xml_list", async=False)
+        res = self._rest_inbound_socket.conference_api(room='', command="xml_list", Async=False)
         if res:
             try:
                 confs = self._parse_conference_xml_list(res, member_filter=members,

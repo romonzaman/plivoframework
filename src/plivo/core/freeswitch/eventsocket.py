@@ -348,14 +348,14 @@ class EventSocket(Commands):
     def _send(self, cmd):
         self.transport.write(cmd + EOL*2)
 
-    def _sendmsg(self, name, arg=None, uuid="", lock=False, loops=1, async=False):
+    def _sendmsg(self, name, arg=None, uuid="", lock=False, loops=1, Async=False):
         msg = "sendmsg %s\ncall-command: execute\nexecute-app-name: %s\n" \
                 % (uuid, name)
         if lock is True:
             msg += "event-lock: true\n"
         if loops > 1:
             msg += "loops: %d\n" % loops
-        if async is True:
+        if Async is True:
             msg += "async: true\n"
         if arg:
             arglen = len(arg)
@@ -390,7 +390,7 @@ class EventSocket(Commands):
         self.trace("_protocol_send %s done" % command)
         return event
 
-    def _protocol_sendmsg(self, name, args=None, uuid="", lock=False, loops=1, async=False):
+    def _protocol_sendmsg(self, name, args=None, uuid="", lock=False, loops=1, Async=False):
         if self._closing_state:
             return Event()
         self.trace("_protocol_sendmsg %s" % name)
@@ -400,7 +400,7 @@ class EventSocket(Commands):
         _async_res = gevent.event.AsyncResult()
         with self._lock:
             self._commands_pool.append((_cmd_uuid, _async_res))
-            self._sendmsg(name, args, uuid, lock, loops, async)
+            self._sendmsg(name, args, uuid, lock, loops, Async)
         self.trace("_protocol_sendmsg %s wait ..." % name)
         _uuid, event = _async_res.get()
         if _cmd_uuid != _uuid:
