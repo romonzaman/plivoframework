@@ -191,7 +191,7 @@ def get_resource(server, url):
                         stream, resource_type = server.cache.cache_resource(url)
                     except UnsupportedResourceFormat:
                         server.log.error("Cache -- Ignoring Unsupported File at - %s" % url)
-        except Exception, e:
+        except Exception as e:
             server.log.error("Cache -- Failure !")
             [ server.log.debug('Cache -- Error: %s' % line) for line in \
                             traceback.format_exc().splitlines() ]
@@ -258,7 +258,7 @@ class PlivoCacheApi(object):
                                   headers=None, mimetype=_type,
                                   content_type=_type,
                                   direct_passthrough=False)
-        except Exception, e:
+        except Exception as e:
             self.log.error("/Cache/ Error: %s" % str(e))
             [ self.log.error('/Cache/ Error: %s' % line) for line in \
                             traceback.format_exc().splitlines() ]
@@ -278,7 +278,7 @@ class PlivoCacheApi(object):
                 return "NO TYPE", 404
             self.log.debug("Url %s: type is %s" % (str(url), str(resource_type)))
             return flask.jsonify(CacheType=resource_type)
-        except Exception, e:
+        except Exception as e:
             self.log.error("/CacheType/ Error: %s" % str(e))
             [ self.log.error('/CacheType/ Error: %s' % line) for line in \
                             traceback.format_exc().splitlines() ]
@@ -289,7 +289,7 @@ class PlivoCacheApi(object):
         try:
             self.reload()
             return flask.jsonify(Success=True, Message="ReloadConfig done")
-        except Exception, e:
+        except Exception as e:
             self.log.error("/ReloadConfig/ Error: %s" % str(e))
             [ self.log.error('/ReloadConfig/ Error: %s' % line) for line in \
                             traceback.format_exc().splitlines() ]

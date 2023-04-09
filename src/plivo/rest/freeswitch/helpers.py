@@ -5,15 +5,17 @@ from gevent import monkey
 monkey.patch_all()
 
 import base64
-import ConfigParser
+from configparser import ConfigParser
+import configparser as cp
 from hashlib import sha1
 import hmac
-import httplib
+import http_client as httplib
 import os
 import os.path
 import urllib
-import urllib2
-import urlparse
+import urllib.request as urllib2
+import urllib.parse
+from urllib.parse import urlparse
 import uuid
 import traceback
 import re
@@ -160,7 +162,7 @@ class HTTPRequest:
             uri = self._build_get_uri(uri, params)
             _request = HTTPUrlRequest(uri)
         else:
-            _request = HTTPUrlRequest(uri, urllib.urlencode(params))
+            _request = HTTPUrlRequest(uri, data=urllib.parse.urlencode(params).encode('utf-8'))
             if method and (method == 'DELETE' or method == 'PUT'):
                 _request.http_method = method
 
@@ -179,7 +181,7 @@ class HTTPRequest:
                     s += k + x
 
             # compute signature and compare signatures
-            signature =  base64.encodestring(hmac.new(self.auth_token, s, sha1).\
+            signature =  base64.b64encode(hmac.new(self.auth_token.decode('utf-8').encode('utf-8'), s.encode('utf-8'), sha1).\
                                                                 digest()).strip()
             _request.add_header("X-PLIVO-SIGNATURE", "%s" % signature)
         return _request
@@ -190,7 +192,7 @@ class HTTPRequest:
                                                             % method)
         # Read all params in the query string and include them in params
         _params = params.copy()
-        query = urlparse.urlsplit(uri)[3]
+        query = urlparse(uri)[3]
         if query:
             if log:
                 log.debug("Extra params found in url query for %s %s" \
@@ -211,7 +213,7 @@ class HTTPRequest:
 
 
 def get_config(filename):
-    config = ConfigParser.SafeConfigParser()
+    config = ConfigParser()
     config.read(filename)
     return config
 
@@ -226,7 +228,7 @@ def get_conf_value(config, section, key):
     try:
         value = config.get(section, key)
         return str(value)
-    except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+    except (cp.NoSectionError, cp.NoOptionError):
         return ""
 
 
@@ -262,7 +264,7 @@ class HTTPJsonConfig(object):
 
 class PlivoConfig(object):
     def __init__(self, source):
-        self._cfg = ConfigParser.SafeConfigParser()
+        self._cfg = ConfigParser()
         self._cfg.optionxform = str # make case sensitive
         self._source = source
         self._json_cfg = None
@@ -283,7 +285,7 @@ class PlivoConfig(object):
         self._cfg.read(self._source)
         try:
             self._json_source = self._cfg.get('common', 'JSON_CONFIG_URL')
-        except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+        except (cp.NoSectionError, cp.NoOptionError):
             self._json_source = None
         if self._json_source:
             self._json_cfg = HTTPJsonConfig()
@@ -302,7 +304,7 @@ class PlivoConfig(object):
     def get(self, section, key, **kwargs):
         try:
             return self._cache[section][key].strip()
-        except KeyError, e:
+        except KeyError as e:
             try:
                 d = kwargs['default']
                 return d
@@ -341,7 +343,7 @@ def get_resource(socket, url):
             else:
                 socket.log.warn("Unsupported format %s" % str(cache_type))
 
-    except Exception, e:
+    except Exception as e:
         socket.log.error("Cache Error !")
         socket.log.error("Cache Error: %s" % str(e))
 
@@ -397,7 +399,7 @@ def get_grammar_resource(socket, grammar):
                 handler = urllib2.urlopen(req)
                 response = handler.read()
                 return response
-            except Exception, e:
+            except Exception as e:
                 socket.log.error("Grammar Cache Error !")
                 socket.log.error("Grammar Cache Error: %s" % str(e))
         # default fetch direct url
@@ -409,7 +411,7 @@ def get_grammar_resource(socket, grammar):
         if not response:
             raise Exception("No Grammar response")
         return response
-    except Exception, e:
+    except Exception as e:
         socket.log.error("Grammar Cache Error !")
         socket.log.error("Grammar Cache Error: %s" % str(e))
     return False

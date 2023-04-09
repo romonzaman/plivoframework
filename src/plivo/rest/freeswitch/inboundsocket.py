@@ -439,7 +439,7 @@ class RESTInboundSocket(InboundEventSocket):
             # send hangup
             try:
                 self.set_hangup_complete(request_uuid, call_uuid, reason, event, hangup_url)
-            except Exception, e:
+            except Exception as e:
                 self.log.error(str(e))
 
     def on_channel_state(self, event):
@@ -605,7 +605,7 @@ class RESTInboundSocket(InboundEventSocket):
             http_obj = HTTPRequest(self.get_server().key, self.get_server().secret, self.get_server().proxy_url)
             data = http_obj.fetch_response(url, params, method, log=self.log)
             return data
-        except Exception, e:
+        except Exception as e:
             self.log.error("Sending to %s %s with %s -- Error: %s"
                                         % (method, url, params, e))
         return None
@@ -673,7 +673,7 @@ class RESTInboundSocket(InboundEventSocket):
                     return
                 self.log.info("Call Attempt Failed for RequestUUID %s, retrying next gateway ..." % request_uuid)
                 continue
-        except Exception, e:
+        except Exception as e:
             self.log.error(str(e))
 
     def group_originate(self, request_uuid, group_list, group_options=[], reject_causes=''):
@@ -690,7 +690,7 @@ class RESTInboundSocket(InboundEventSocket):
         for call_req in group_list:
             extras = []
             dial_gws = []
-            for gw in call.gateways:
+            for gw in call_req.gateways:
                 _options = []
                 # Add codecs option
                 if gw.codecs:
@@ -734,10 +734,13 @@ class RESTInboundSocket(InboundEventSocket):
                 % (dial_str, outbound_str)
         self.log.debug("GroupCall : %s" % str(dial_str))
 
-        bg_api_response = self.bgapi(dial_str)
-        job_uuid = bg_api_response.get_job_uuid()
-        self.bk_jobs[job_uuid] = request_uuid
-        self.log.debug(str(bg_api_response))
+        try:
+            bg_api_response = self.bgapi(dial_str)
+            job_uuid = bg_api_response.get_job_uuid()
+            self.bk_jobs[job_uuid] = request_uuid
+            self.log.debug(str(bg_api_response))
+        except Exception as e:
+            job_uuid = ''
         if not job_uuid:
             self.log.error("GroupCall Failed for RequestUUID %s -- JobUUID not received" \
                                                             % request_uuid)
@@ -771,10 +774,13 @@ class RESTInboundSocket(InboundEventSocket):
                         % (self.get_server().fs_out_address)
         self.xfer_jobs[call_uuid] = outbound_str
         # Transfer into sleep state a little waiting for real transfer
-        res = self.api("uuid_transfer %s 'sleep:5000' inline" % call_uuid)
-        if res.is_success():
-            self.log.info("TransferCall Spawned for %s" % call_uuid)
-            return True
+        try:
+            res = self.api("uuid_transfer %s 'sleep:5000' inline" % call_uuid)
+            if res.is_success():
+                self.log.info("TransferCall Spawned for %s" % call_uuid)
+                return True
+        except Exception as e:
+            pass
         # On failure, remove the job and log error
         try:
             del self.xfer_jobs[call_uuid]
@@ -817,7 +823,7 @@ class RESTInboundSocket(InboundEventSocket):
         self.log.info("Executed Hangup for all calls")
         return True
 
-    def conference_api(self, room=None, command=None, async=True):
+    def conference_api(self, room=None, command=None, Async=True):
         if not command:
             self.log.error("Conference Api Failed -- 'command' is empty")
             return False
@@ -826,7 +832,7 @@ class RESTInboundSocket(InboundEventSocket):
         else:
             cmd = "conference %s" % command
         # async mode
-        if async:
+        if Async:
             bg_api_response = self.bgapi(cmd)
             job_uuid = bg_api_response.get_job_uuid()
             if not job_uuid:
@@ -1031,7 +1037,7 @@ class RESTInboundSocket(InboundEventSocket):
                     except:
                         continue
             return result
-        except Exception, e:
+        except Exception as e:
             self.log.warn("cannot get displace_media_list: %s" % str(e))
             return result
 

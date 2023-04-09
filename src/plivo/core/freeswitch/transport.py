@@ -23,7 +23,7 @@ class InboundTransport(Transport):
         self.sock.settimeout(self.timeout)
         self.sock.connect((self.host, self.port))
         self.sock.settimeout(None)
-        self.sockfd = self.sock.makefile()
+        self.sockfd = self.sock.makefile('rw')
         self.closed = False
 
     def write(self, data):
@@ -40,7 +40,7 @@ class OutboundTransport(Transport):
         self.sock = socket
         # safe guard inactivity timeout
         self.sock.settimeout(inactivity_timeout)
-        self.sockfd = socket.makefile()
+        self.sockfd = socket.makefile('rwb')
         self.address = address
         self.timeout = connect_timeout
         self.closed = False

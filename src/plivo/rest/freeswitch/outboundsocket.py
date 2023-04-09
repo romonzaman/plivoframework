@@ -319,7 +319,7 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
             self._run()
         except RESTHangup:
             self.log.warn('Hangup')
-        except Exception, e:
+        except Exception as e:
             [ self.log.error(line) for line in \
                         traceback.format_exc().splitlines() ]
             raise e
@@ -463,7 +463,7 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
             self.process_call()
         except RESTHangup:
             self.log.warn('Channel has hung up, breaking Processing Call')
-        except Exception, e:
+        except Exception as e:
             self.log.error('Processing Call Failure !')
             # If error occurs during xml parsing
             # log exception and break
@@ -502,7 +502,7 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
                 self.execute_xml()
                 self.log.info('End of RESTXML')
                 return
-            except RESTRedirectException, redirect:
+            except RESTRedirectException as redirect:
                 # double check channel exists/hung up
                 if self.has_hangup():
                     raise RESTHangup()
@@ -532,7 +532,7 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
                     return
                 gevent.sleep(0.010)
                 continue
-            except RESTSIPTransferException, sip_redirect:
+            except RESTSIPTransferException as sip_redirect:
                 self.session_params['SIPTransfer'] = 'true'
                 self.session_params['SIPTransferURI'] = sip_redirect.get_sip_url() \
                             or ''
@@ -564,8 +564,9 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
         try:
             http_obj = HTTPRequest(self.key, self.secret, proxy_url=self.proxy_url)
             data = http_obj.fetch_response(url, params, method, log=self.log)
-            return data
-        except Exception, e:
+            return data.decode('utf-8')
+
+        except Exception as e:
             self.log.error("Sending to %s %s with %s -- Error: %s" \
                                         % (method, url, params, e))
         return None
@@ -579,7 +580,7 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
         try:
             #convert the string into an Element instance
             doc = etree.fromstring(xml_str)
-        except Exception, e:
+        except Exception as e:
             raise RESTSyntaxException("Invalid RESTXML Response Syntax: %s" \
                         % str(e))
 
@@ -614,7 +615,8 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
             self.validate_element(element, element_instance)
 
     def validate_element(self, element, element_instance):
-        children = element.getchildren()
+        print(element)
+        children = list(element)
         if children and not element_instance.nestables:
             raise RESTFormatException("%s cannot have any children!"
                                             % element_instance.name)
