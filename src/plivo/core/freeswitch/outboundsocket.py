@@ -34,11 +34,8 @@ class OutboundEventSocket(EventSocket):
         self._channel = None
         # Runs the main function .
         try:
-            self.trace("run now")
             self.run()
-            self.trace("run done")
         finally:
-            self.trace("disconnect now")
             self.disconnect()
             self.trace("disconnect done")
 

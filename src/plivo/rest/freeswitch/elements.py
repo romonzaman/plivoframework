@@ -388,7 +388,7 @@ class Conference(Element):
                     pause_secs = child_instance.length
                     pause_str = 'file_string://silence_stream://%s' % (pause_secs * 1000)
                     sound_files.append(pause_str)
-        except Exception, e:
+        except Exception as e:
             outbound_socket.log.warn('Fetching remote sound from restxml failed: %s' % str(e))
         finally:
             outbound_socket.log.info('Fetching remote sound from restxml done')
@@ -723,7 +723,7 @@ class Dial(Element):
                     pause_secs = child_instance.length
                     pause_str = 'file_string://silence_stream://%s' % (pause_secs * 1000)
                     sound_files.append(pause_str)
-        except Exception, e:
+        except Exception as e:
             outbound_socket.log.warn('Fetching remote sound from restxml failed: %s' % str(e))
         finally:
             outbound_socket.log.info('Fetching remote sound from restxml done for %s' % remote_url)
@@ -1622,7 +1622,7 @@ class Notify(Element):
             http_obj = HTTPRequest(outbound_socket.key, outbound_socket.secret, proxy_url=outbound_socket.proxy_url)
             data = http_obj.fetch_response(self.url, params, self.method, log=outbound_socket.log)
             return data
-        except Exception, e:
+        except Exception as e:
             self.log.error("Sending to %s %s with %s -- Error: %s" \
                                         % (self.method, self.url, params, e))
         return None
@@ -1806,7 +1806,7 @@ class GetSpeech(Element):
                     f = open(gpath, 'w')
                     f.write(raw_grammar)
                     f.close()
-                except Exception, e:
+                except Exception as e:
                     outbound_socket.log.error("GetSpeech result failure, cannot write grammar: %s" % str(grammar_file))
                     grammar_file = ''
             elif raw_grammar is None:
@@ -1984,7 +1984,7 @@ class GetSpeech(Element):
                     params['Mode'] = sinput.get('mode', '')
                     params['SpeechResult'] = sinput.text
                     params['SpeechInterpretation'] = sinstance.text
-                except Exception, e:
+                except Exception as e:
                     params['Confidence'] = "-1"
                     params['SpeechResultError'] = str(speech_result)
                     outbound_socket.log.error("GetSpeech result failure, cannot parse result: %s" % str(e))

@@ -226,7 +226,7 @@ def get_conf_value(config, section, key):
     try:
         value = config.get(section, key)
         return str(value)
-    except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+    except (cp.NoSectionError, cp.NoOptionError):
         return ""
 
 
@@ -283,7 +283,7 @@ class PlivoConfig(object):
         self._cfg.read(self._source)
         try:
             self._json_source = self._cfg.get('common', 'JSON_CONFIG_URL')
-        except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+        except (cp.NoSectionError, cp.NoOptionError):
             self._json_source = None
         if self._json_source:
             self._json_cfg = HTTPJsonConfig()
@@ -302,7 +302,7 @@ class PlivoConfig(object):
     def get(self, section, key, **kwargs):
         try:
             return self._cache[section][key].strip()
-        except KeyError, e:
+        except KeyError as e:
             try:
                 d = kwargs['default']
                 return d
@@ -341,7 +341,7 @@ def get_resource(socket, url):
             else:
                 socket.log.warn("Unsupported format %s" % str(cache_type))
 
-    except Exception, e:
+    except Exception as e:
         socket.log.error("Cache Error !")
         socket.log.error("Cache Error: %s" % str(e))
 
@@ -397,7 +397,7 @@ def get_grammar_resource(socket, grammar):
                 handler = urllib2.urlopen(req)
                 response = handler.read()
                 return response
-            except Exception, e:
+            except Exception as e:
                 socket.log.error("Grammar Cache Error !")
                 socket.log.error("Grammar Cache Error: %s" % str(e))
         # default fetch direct url
@@ -409,7 +409,7 @@ def get_grammar_resource(socket, grammar):
         if not response:
             raise Exception("No Grammar response")
         return response
-    except Exception, e:
+    except Exception as e:
         socket.log.error("Grammar Cache Error !")
         socket.log.error("Grammar Cache Error: %s" % str(e))
     return False

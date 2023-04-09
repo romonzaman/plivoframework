@@ -99,7 +99,7 @@ class PlivoOutboundServer(outboundsocket.OutboundServer):
             self._config = config
             self.log.info("Config : %s" % str(self._config.dumps()))
 
-        except Exception, e:
+        except Exception as e:
             if backup_config:
                 self._config = backup_config
                 self.log.warn("Error reloading config: %s" % str(e))

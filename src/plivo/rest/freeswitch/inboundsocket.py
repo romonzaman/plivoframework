@@ -400,7 +400,7 @@ class RESTInboundSocket(InboundEventSocket):
             # send hangup
             try:
                 self.set_hangup_complete(None, call_uuid, reason, event, None)
-            except Exception, e:
+            except Exception as e:
                 self.log.error(str(e))
         # Handle outgoing call hangup
         else:
@@ -439,7 +439,7 @@ class RESTInboundSocket(InboundEventSocket):
             # send hangup
             try:
                 self.set_hangup_complete(request_uuid, call_uuid, reason, event, hangup_url)
-            except Exception, e:
+            except Exception as e:
                 self.log.error(str(e))
 
     def on_channel_state(self, event):
@@ -605,7 +605,7 @@ class RESTInboundSocket(InboundEventSocket):
             http_obj = HTTPRequest(self.get_server().key, self.get_server().secret, self.get_server().proxy_url)
             data = http_obj.fetch_response(url, params, method, log=self.log)
             return data
-        except Exception, e:
+        except Exception as e:
             self.log.error("Sending to %s %s with %s -- Error: %s"
                                         % (method, url, params, e))
         return None
@@ -673,7 +673,7 @@ class RESTInboundSocket(InboundEventSocket):
                     return
                 self.log.info("Call Attempt Failed for RequestUUID %s, retrying next gateway ..." % request_uuid)
                 continue
-        except Exception, e:
+        except Exception as e:
             self.log.error(str(e))
 
     def group_originate(self, request_uuid, group_list, group_options=[], reject_causes=''):
@@ -1031,7 +1031,7 @@ class RESTInboundSocket(InboundEventSocket):
                     except:
                         continue
             return result
-        except Exception, e:
+        except Exception as e:
             self.log.warn("cannot get displace_media_list: %s" % str(e))
             return result
 

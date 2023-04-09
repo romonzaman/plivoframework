@@ -42,7 +42,7 @@ if __name__ == '__main__':
     else:
         daemon = False
     if not os.path.isfile(configfile):
-        print "Config file %s not found !" % configfile
+        print("Config file %s not found !" % configfile)
         sys.exit(1)
     cache_server = PlivoCacheServer(configfile, daemon=daemon, pidfile=pidfile)
     cache_server.start()

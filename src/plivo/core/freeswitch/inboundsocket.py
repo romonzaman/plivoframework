@@ -61,7 +61,7 @@ class InboundEventSocket(EventSocket):
         '''
         try:
             self.run()
-        except ConnectError, e:
+        except ConnectError as e:
             self.connected = False
             raise
 
@@ -70,7 +70,7 @@ class InboundEventSocket(EventSocket):
         # Connects transport, if connection fails, raise ConnectError
         try:
             self.transport.connect()
-        except Exception, e:
+        except Exception as e:
             raise ConnectError("Transport failure: %s" % str(e))
         # Sets connected flag to True
         self.connected = True

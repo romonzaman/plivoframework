@@ -121,11 +121,11 @@ class EventSocket(Commands):
                 break
             except ConnectError:
                 break
-            except socket.error, se:
+            except socket.error as se:
                 break
-            except GreenletExit, e:
+            except GreenletExit as e:
                 break
-            except Exception, ex:
+            except Exception as ex:
                 self.trace("handle_events error => %s" % str(ex))
         self.trace("handle_events stopped now")
 
@@ -133,7 +133,7 @@ class EventSocket(Commands):
             self.trace("handle_events socket.close")
             self.transport.sockfd.close()
             self.trace("handle_events socket.close success")
-        except Exception, e:
+        except Exception as e:
             self.trace("handle_eventssocket.close ERROR: %s" % e)
 
         self.connected = False

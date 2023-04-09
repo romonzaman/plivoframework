@@ -207,7 +207,7 @@ class PlivoRestApi(object):
                     pause_secs = child_instance.length
                     pause_str = 'file_string://silence_stream://%s' % (pause_secs * 1000)
                     sound_files.append(pause_str)
-        except Exception, e:
+        except Exception as e:
             self._rest_inbound_socket.log.warn('Fetching remote sound from restxml failed: %s' % str(e))
         finally:
             self._rest_inbound_socket.log.info('Fetching remote sound from restxml done for %s' % remote_url)
@@ -421,13 +421,13 @@ class PlivoRestApi(object):
                         pid = int(open(outbound_pidfile, 'r').read().strip())
                         os.kill(pid, 1)
                         extra += " and outbound_server"
-                    except Exception, e:
+                    except Exception as e:
                         extra += ", failed for outbound_server (%s)" % str(e)
                 else:
                     extra += ", failed for outbound_server (no pidfile)"
                 msg = "Plivo config reloaded : %s" % extra
                 result = True
-            except Exception, e:
+            except Exception as e:
                 msg += ' : %s' % str(e)
                 result = False
 
@@ -466,7 +466,7 @@ class PlivoRestApi(object):
             else:
                 raise Exception(msg)
 
-        except Exception, e:
+        except Exception as e:
             msg = "Plivo Cache Server config reload failed"
             self._rest_inbound_socket.log.error("ReloadCacheConfig Failed -- %s" % str(e))
             result = False
@@ -1504,7 +1504,7 @@ class PlivoRestApi(object):
             msg = "Conference ListMembers Executed"
             result = True
             return self.send_response(Success=result, Message=msg, List=member_list)
-        except Exception, e:
+        except Exception as e:
             msg = "Conference ListMembers Failed to parse result"
             result = False
             self._rest_inbound_socket.log.error("Conference ListMembers Failed -- %s" % str(e))
@@ -1546,7 +1546,7 @@ class PlivoRestApi(object):
                 msg = "Conference List Executed"
                 result = True
                 return self.send_response(Success=result, Message=msg, List=confs)
-            except Exception, e:
+            except Exception as e:
                 msg = "Conference List Failed to parse result"
                 result = False
                 self._rest_inbound_socket.log.error("Conference List Failed -- %s" % str(e))
