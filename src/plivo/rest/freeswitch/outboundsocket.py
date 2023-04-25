@@ -392,8 +392,9 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
             sched_hangup_id = channel.get_header('variable_plivo_sched_hangup_id')
             # Don't post hangup in outbound direction
             # because it is handled by inboundsocket
-            self.default_hangup_url = None
-            self.hangup_url = None
+# MK
+            # self.default_hangup_url = None
+            # self.hangup_url = None
             # Set CallStatus to Session Params
             self.session_params['CallStatus'] = 'in-progress'
             # Set answered flag to true in case outbound call
@@ -471,6 +472,8 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
             [ self.log.error(line) for line in \
                         traceback.format_exc().splitlines() ]
         self.log.info('Processing Call Ended')
+        if self.default_hangup_url:
+            self.send_to_url(self.default_hangup_url, self.session_params, 'POST')
 
     def process_call(self):
         """Method to proceed on the call
