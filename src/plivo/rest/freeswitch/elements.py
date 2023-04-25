@@ -156,6 +156,9 @@ class Element(object):
         self.children = []
         self.uri = None
         self._element = None
+        self.wasabi_key = ''
+        self.wasabi_pass = ''
+        self.wasabi_bucket = ''
 
     def get_element(self):
         return self._element
@@ -1448,6 +1451,20 @@ class Record(Element):
         # Finish on Key
         self.finish_on_key = finish_on_key
 
+    def upload_to_s3(self, file_name, recording_file):
+        try:
+            if self.wasabi_key:
+                import boto3_wasabi
+                s3 = boto3_wasabi.client('s3', aws_access_key_id=self.wasabi_key, aws_secret_access_key=self.wasabi_pass)
+                body = open(recording_file, 'rb')
+                wsabi_url = "https://s3.wasabisys.com/%s/%s" % ( self.wasabi_bucket, file_name)
+                s3.put_object( Bucket=self.wasabi_bucket, Key=file_name, Body=body)
+                body.close()
+                return wsabi_url
+        except:
+            pass
+        return ""
+
     def execute(self, outbound_socket):
         if self.filename:
             filename = self.filename
@@ -1485,6 +1502,8 @@ class Record(Element):
             outbound_socket.stop_dtmf()
             outbound_socket.log.info("Record Completed")
 
+        s3_path = self.upload_to_s3(file_name=filename, recording_file=self.file_path)
+        print(s3_path)
         # If action is set, redirect to this url
         # Otherwise, continue to next Element
         if self.action and is_valid_url(self.action):
@@ -1493,6 +1512,7 @@ class Record(Element):
             params['RecordingFilePath'] = self.file_path
             params['RecordingFileName'] = filename
             params['RecordFile'] = record_file
+            params['s3_url'] = s3_path
             # case bothLegs is True
             if self.both_legs:
                 # RecordingDuration not available for bothLegs because recording is in progress

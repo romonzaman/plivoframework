@@ -84,6 +84,10 @@ class PlivoOutboundServer(outboundsocket.OutboundServer):
             self.extra_fs_vars = config.get('common', 'EXTRA_FS_VARS', default='')
             self.proxy_url = config.get('common', 'PROXY_URL', default=None)
 
+            self.wasabi_key = config.get('common', 'WASABI_KEY', default=None)
+            self.wasabi_pass = config.get('common', 'WASABI_PASS', default=None)
+            self.wasabi_bucket = config.get('common', 'WASABI_BUCKET', default=None)
+
             # load cache params
             self.cache['url'] = config.get('common', 'CACHE_URL', default='')
             self.cache['script'] = config.get('common', 'CACHE_SCRIPT', default='')
@@ -134,7 +138,10 @@ class PlivoOutboundServer(outboundsocket.OutboundServer):
                                  auth_token=self.secret,
                                  request_id=request_id,
                                  trace=self._trace,
-                                 proxy_url=self.proxy_url
+                                 proxy_url=self.proxy_url,
+                                 wasabi_key=self.wasabi_key,
+                                 wasabi_pass=self.wasabi_pass,
+                                 wasabi_bucket=self.wasabi_bucket
                                 )
         self.log.info("(%d) End request from %s" % (request_id, str(address)))
         try:

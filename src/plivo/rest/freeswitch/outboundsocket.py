@@ -94,7 +94,10 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
                  auth_token='',
                  request_id=0,
                  trace=False,
-                 proxy_url=None):
+                 proxy_url=None,
+                 wasabi_key=None,
+                 wasabi_pass=None,
+                 wasabi_bucket=None):
         # the request id
         self._request_id = request_id
         # set logger
@@ -128,6 +131,9 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
         # set answered flag
         self.answered = False
         self.cache = cache
+        self.wasabi_key = wasabi_key
+        self.wasabi_pass = wasabi_pass
+        self.wasabi_bucket = wasabi_bucket
         # inherits from outboundsocket
         OutboundEventSocket.__init__(self, socket, address, filter=None,
                                      eventjson=True, pool_size=200, trace=trace)
@@ -612,6 +618,9 @@ class PlivoOutboundEventSocket(OutboundEventSocket):
             element_class = getattr(elements, str(element.tag), None)
             element_instance = element_class()
             element_instance.parse_element(element, self.target_url)
+            element_instance.wasabi_key = self.wasabi_key
+            element_instance.wasabi_pass = self.wasabi_pass
+            element_instance.wasabi_bucket = self.wasabi_bucket
             self.parsed_element.append(element_instance)
             # Validate, Parse & Store the nested children
             # inside the main element element
