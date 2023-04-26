@@ -1506,7 +1506,8 @@ class Record(Element):
             outbound_socket.stop_dtmf()
             outbound_socket.log.info("Record Completed")
 
-        s3_path = self.upload_to_s3(file_name=record_file, recording_path=self.file_path)
+        audio_file = "%s.%s" % (filename, self.file_format)
+        s3_path = self.upload_to_s3(file_name=audio_file, recording_path=self.file_path)
         print(s3_path)
         # If action is set, redirect to this url
         # Otherwise, continue to next Element
