@@ -1452,6 +1452,8 @@ class Record(Element):
         self.finish_on_key = finish_on_key
 
     def upload_to_s3(self, file_name, recording_path):
+        print(file_name)
+        print(recording_path)
         if True:
             if self.wasabi_key:
                 audiofile = "%s%s"%(recording_path, file_name)
